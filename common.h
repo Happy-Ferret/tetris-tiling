@@ -10,25 +10,23 @@
 
 #define PIECE_VERTICAL_OFFSET 2
 
-typedef uint64_t bpiece_t;
+typedef uint64_t piece_t;
 typedef uint64_t board_t;
+typedef uint64_t crossing_t;
 
-struct tetris_piece {
+struct piece_data {
     char board[PIECE_HEIGHT][PIECE_WIDTH];
 };
 
-struct crossing {
-    board_t board;
-    uint8_t pieces[BOARD_HEIGHT];
-};
-
-extern const struct tetris_piece pieces[];
+extern const struct piece_data piece_data[];
 extern const unsigned int num_pieces;
-extern bpiece_t *binary_pieces;
+extern piece_t *binary_pieces;
 
-bpiece_t tetris_piece_get_binary(const struct tetris_piece *piece);
+piece_t tetris_piece_get_binary(const struct piece_data *piece);
 void print_board(FILE *file, board_t board);
-void print_piece(FILE *file, bpiece_t piece);
+void print_piece(FILE *file, piece_t piece);
+
+unsigned int compute_crossings(board_t board, unsigned int pos);
 
 #endif /* __TETRIS_COMMON_H__ */
 

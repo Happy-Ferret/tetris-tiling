@@ -3,17 +3,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-bpiece_t
-tetris_piece_get_binary(const struct tetris_piece *piece)
+piece_t
+tetris_piece_get_binary(const struct piece_data *piece)
 {
     int r, c;
-    bpiece_t p;
+    piece_t p;
 
     p = 0;
     for (r = 0; r < PIECE_HEIGHT; ++r) {
         for (c = 0; c < PIECE_WIDTH; ++c) {
             if (piece->board[PIECE_HEIGHT - r - 1][c]) {
-                p |= (bpiece_t)1u << (r * PIECE_WIDTH + c);
+                p |= (piece_t)1u << (r * PIECE_WIDTH + c);
             }
         }
     }
@@ -48,7 +48,7 @@ print_board(FILE *file, board_t board)
 }
 
 void
-print_piece(FILE *file, bpiece_t piece)
+print_piece(FILE *file, piece_t piece)
 {
     print_board_helper(file, piece, PIECE_HEIGHT);
 }

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 static inline board_t
-add_piece_to_board(bpiece_t piece, board_t board, unsigned int pos)
+add_piece_to_board(piece_t piece, board_t board, unsigned int pos)
 {
     if (pos < PIECE_VERTICAL_OFFSET)
         return board | piece >> (PIECE_VERTICAL_OFFSET - pos) * PIECE_WIDTH;
@@ -12,7 +12,7 @@ add_piece_to_board(bpiece_t piece, board_t board, unsigned int pos)
 }
 
 static inline board_t
-check_piece_placement(bpiece_t piece, board_t board, unsigned int pos)
+check_piece_conflict(piece_t piece, board_t board, unsigned int pos)
 {
     board_t shifted_board;
     if (pos < PIECE_VERTICAL_OFFSET)
@@ -29,5 +29,25 @@ check_piece_placement(bpiece_t piece, board_t board, unsigned int pos)
                 << (BOARD_HEIGHT + PIECE_VERTICAL_OFFSET - pos) * PIECE_WIDTH;
     
     return shifted_board & piece;
+}
+
+unsigned int
+compute_crossings(board_t board, unsigned int pos)
+{
+    unsigned int i, crossings;
+
+    if (pos == BOARD_HEIGHT)
+        return 1;
+
+    crossings = 0;
+    for (i = 0; i < num_pieces; ++i) {
+        if (! check_piece_conflict(binary_pieces[i], board, pos)) {
+            crossings += compute_crossings(
+                    add_piece_to_board(board, binary_pieces[i], pos), 
+                    pos + 1);
+        }
+    }
+
+    return crossings;
 }
 

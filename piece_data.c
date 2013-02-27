@@ -1,6 +1,6 @@
 #include "common.h"
 
-const struct tetris_piece pieces[] = {
+const struct piece_data piece_data[] = {
     {{
         { 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0 },
@@ -35,6 +35,6 @@ const struct tetris_piece pieces[] = {
     }},
 };
 
-const unsigned int num_pieces = sizeof(pieces) / sizeof(*pieces);
-bpiece_t *binary_pieces;
+const unsigned int num_pieces = sizeof(piece_data) / sizeof(*piece_data);
+piece_t *binary_pieces;
 
