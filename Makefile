@@ -2,7 +2,9 @@ CFLAGS = -O0 -g -Wall
 
 OBJS = \
 	main \
-	pieces
+	pieces \
+	crossings \
+	piece_data
 
 all: tetris
 

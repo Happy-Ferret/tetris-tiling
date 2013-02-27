@@ -6,7 +6,7 @@
 
 #define PIECE_WIDTH 6
 #define PIECE_HEIGHT 6
-#define BOARD_HEIGHT 8
+#define BOARD_HEIGHT 10
 
 #define PIECE_VERTICAL_OFFSET 2
 
@@ -29,8 +29,6 @@ extern bpiece_t *binary_pieces;
 bpiece_t tetris_piece_get_binary(const struct tetris_piece *piece);
 void print_board(FILE *file, board_t board);
 void print_piece(FILE *file, bpiece_t piece);
-
-board_t check_piece_placement(bpiece_t piece, board_t board, unsigned int pos);
 
 #endif /* __TETRIS_COMMON_H__ */
 
