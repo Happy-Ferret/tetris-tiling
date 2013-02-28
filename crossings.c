@@ -67,6 +67,26 @@ crossing_list_append_all(struct crossing_list *list,
             other->count * sizeof(*other->crossings));
 }
 
+inline ssize_t
+crossing_list_find(struct crossing_list *list, crossing_t crossing)
+{
+    crossing_t *start, *end, *middle;
+
+    start = list->crossings;
+    end = list->crossings + list->count;
+
+    while (start < end) {
+        middle = start + (end - start) / 2;
+        if (crossing > *middle)
+            start = middle + 1;
+        else if (crossing < *middle)
+            end = middle;
+        else
+            return middle - list->crossings;
+    }
+    return -1;
+}
+
 inline void
 crossing_list_destroy(struct crossing_list *list)
 {
@@ -114,7 +134,7 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
     }
 
     for (r = BOARD_HEIGHT - 1; r >= 0; --r) {
-        printf("%s  %02u\n", board[r], get_crossing_value(crossing, r));
+        fprintf(file, "%s  %02u\n", board[r], get_crossing_value(crossing, r));
     }
 }
 

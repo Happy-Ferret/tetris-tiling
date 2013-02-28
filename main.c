@@ -21,6 +21,8 @@ main(int argc, char **argv)
 
     for (i = 0; i < crossing_list.count; ++i) {
         print_crossing(stdout, crossing_list.crossings[i], binary_pieces);
+        if (crossing_list_find(&crossing_list, crossing_list.crossings[i]) != i)
+            fprintf(stderr, "Cannot find crossing %d\n", i);
         fprintf(stdout, "\n");
     }
 

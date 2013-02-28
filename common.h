@@ -31,6 +31,7 @@ void crossing_list_init(struct crossing_list *list);
 void crossing_list_append(struct crossing_list *list, crossing_t crossing);
 void crossing_list_append_all(struct crossing_list *list,
         struct crossing_list *other);
+ssize_t crossing_list_find(struct crossing_list *list, crossing_t crossing);
 void crossing_list_destroy(struct crossing_list *list);
 
 piece_t tetris_piece_get_binary(const struct piece_data *piece);
