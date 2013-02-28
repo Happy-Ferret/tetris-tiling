@@ -35,6 +35,5 @@ const struct piece_data piece_data[] = {
     }},
 };
 
-const unsigned int num_pieces = sizeof(piece_data) / sizeof(*piece_data);
-piece_t *binary_pieces;
+const unsigned int piece_data_count = sizeof(piece_data) / sizeof(*piece_data);
 
