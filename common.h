@@ -6,13 +6,15 @@
 
 #define PIECE_WIDTH 6
 #define PIECE_HEIGHT 6
-#define BOARD_HEIGHT 10
+#define BOARD_HEIGHT 8
 
 #define PIECE_VERTICAL_OFFSET 2
 
 typedef uint64_t piece_t;
 typedef uint64_t board_t;
 typedef uint64_t crossing_t;
+
+#define CROSSING_INVALID 0x3f
 
 struct piece_data {
     char board[PIECE_HEIGHT][PIECE_WIDTH];
@@ -42,9 +44,12 @@ void print_crossing(FILE *file, crossing_t crossing, piece_t *pieces);
 board_t add_piece_to_board(piece_t piece, board_t board, unsigned int pos);
 board_t check_piece_conflict(piece_t piece, board_t board, unsigned int pos);
 
-void compute_crossings(struct crossing_list *crossing_list, crossing_t crossing,
-        board_t board, piece_t *pieces, unsigned int piece_count,
+crossing_t set_crossing_value(crossing_t crossing, unsigned int value,
         unsigned int pos);
+unsigned int get_crossing_value(crossing_t crossing, unsigned int pos);
+
+void compute_crossings(struct crossing_list *crossing_list, piece_t *pieces,
+        unsigned int piece_count);
 
 void print_piece(FILE *file, piece_t piece);
 

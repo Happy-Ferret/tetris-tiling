@@ -94,13 +94,17 @@ crossing_list_destroy(struct crossing_list *list)
     crossing_list_init(list);
 }
 
-static inline crossing_t
-add_crossing_value(crossing_t crossing, unsigned int value, unsigned int pos)
+/* Note that crossings are storeed in reverse-order.  This way, they come out
+ * sorted from the crossing-generation algorithm. */
+inline crossing_t
+set_crossing_value(crossing_t crossing, unsigned int value, unsigned int pos)
 {
-    return crossing | ((crossing_t)value << (BOARD_HEIGHT - pos - 1) * 6);
+    crossing &= ~((crossing_t)0x3f << (BOARD_HEIGHT - pos - 1) * 6);
+    crossing |= (crossing_t)value << (BOARD_HEIGHT - pos - 1) * 6;
+    return crossing;
 }
 
-static inline unsigned int
+inline unsigned int
 get_crossing_value(crossing_t crossing, unsigned int pos)
 {
     return (crossing >> (BOARD_HEIGHT - pos - 1) * 6) & (crossing_t)0x3f;
@@ -121,6 +125,9 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
     }
 
     for (pos = 0; pos < BOARD_HEIGHT; ++pos) {
+        if (get_crossing_value(crossing, pos) == CROSSING_INVALID)
+            continue;
+
         piece = pieces[get_crossing_value(crossing, pos)];
         for (r = 0; r < PIECE_HEIGHT; ++r) {
             for (c = 0; c < PIECE_WIDTH; ++c) {
@@ -138,24 +145,47 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
     }
 }
 
-void
-compute_crossings(struct crossing_list *clist, crossing_t crossing,
-        board_t board, piece_t *pieces, unsigned int piece_count,
-        unsigned int pos)
+inline void
+crossings_compute_kernel(void (*crossing_handler)(void *, crossing_t),
+        void *handler_data, crossing_t crossing, board_t board,
+        piece_t *pieces, unsigned int piece_count, unsigned int pos)
 {
     unsigned int i;
 
     if (pos == BOARD_HEIGHT) {
-        crossing_list_append(clist, crossing);
+        (*crossing_handler)(handler_data, crossing);
         return;
     }
 
+    if (get_crossing_value(crossing, pos) != CROSSING_INVALID) {
+        crossings_compute_kernel(crossing_handler, handler_data, crossing,
+                board, pieces, piece_count, pos + 1);
+        return;
+    }
+        
     for (i = 0; i < piece_count; ++i) {
         if (! check_piece_conflict(pieces[i], board, pos)) {
-            compute_crossings(clist, add_crossing_value(crossing, i, pos),
+            crossings_compute_kernel(crossing_handler, handler_data,
+                    set_crossing_value(crossing, i, pos),
                     add_piece_to_board(pieces[i], board, pos),
                     pieces, piece_count, pos + 1);
         }
     }
+}
+
+void
+compute_crossings(struct crossing_list *clist, piece_t *pieces,
+        unsigned int piece_count)
+{
+    int i;
+    crossing_t initial_crossing;
+
+    initial_crossing = 0;
+    for (i = 0; i < BOARD_HEIGHT; ++i)
+        initial_crossing = set_crossing_value(initial_crossing,
+                CROSSING_INVALID, i);
+
+    crossings_compute_kernel((void *)&crossing_list_append, clist,
+            initial_crossing, 0, pieces, piece_data_count, 0);
 }
 
