@@ -120,7 +120,7 @@ get_crossing_value(crossing_t crossing, unsigned int pos)
 void
 print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
 {
-    int r, c, pos;
+    int r, c, pos, parity;
     piece_t piece;
     char board[BOARD_HEIGHT][PIECE_WIDTH + 1];
 
@@ -131,6 +131,7 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
         board[r][PIECE_WIDTH] = '\0';
     }
 
+    parity = 0;
     for (pos = 0; pos < BOARD_HEIGHT; ++pos) {
         if (get_crossing_value(crossing, pos) == CROSSING_INVALID)
             continue;
@@ -142,18 +143,22 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
                         && r + pos - PIECE_VERTICAL_OFFSET < BOARD_HEIGHT
                         && piece & (1 << (r * PIECE_WIDTH + c))) {
                     board[r + pos - PIECE_VERTICAL_OFFSET][c] = 'A' + pos;
+
+                    if (c < PIECE_WIDTH / 2)
+                        ++parity;
                 }
             }
         }
     }
 
+    fprintf(file, "Parity: %d\n", parity);
     for (r = BOARD_HEIGHT - 1; r >= 0; --r) {
         fprintf(file, "%s  %02u\n", board[r], get_crossing_value(crossing, r));
     }
 }
 
 inline void
-find_all_crossings_kernel(struct crossing_list *clist,
+build_adjacent_crossings_kernel(struct crossing_list *clist,
         crossing_t crossing, board_t board, piece_t *pieces,
         unsigned int piece_count, unsigned int pos)
 {
@@ -163,10 +168,16 @@ find_all_crossings_kernel(struct crossing_list *clist,
         crossing_list_append(clist, crossing);
         return;
     }
+
+    if (get_crossing_value(crossing, pos) != CROSSING_INVALID) {
+        build_adjacent_crossings_kernel(clist, crossing,
+                board, pieces, piece_count, pos + 1);
+        return;
+    }
         
     for (i = 0; i < piece_count; ++i) {
         if (! check_piece_conflict(pieces[i], board, pos)) {
-            find_all_crossings_kernel(clist,
+            build_adjacent_crossings_kernel(clist,
                     set_crossing_value(crossing, i, pos),
                     add_piece_to_board(pieces[i], board, pos),
                     pieces, piece_count, pos + 1);
@@ -175,9 +186,77 @@ find_all_crossings_kernel(struct crossing_list *clist,
 }
 
 void
+build_adjacent_crossings(struct crossing_list *clist, crossing_t crossing,
+        piece_t *pieces, unsigned int piece_count)
+{
+    int i;
+    board_t board, left_edge;
+
+    left_edge = 0;
+    for (i = 0; i < BOARD_HEIGHT; ++i)
+        left_edge |= 1 << (i * PIECE_WIDTH);
+
+    board = 0;
+    for (i = 0; i < BOARD_HEIGHT; ++i) {
+        board = add_piece_to_board(
+                pieces[get_crossing_value(crossing, i)], board, i);
+    }
+    board = (board & ~left_edge) >> 1;
+}
+
+inline void
+find_all_crossings_kernel(struct crossing_list *clist,
+        crossing_t crossing, board_t board, piece_t *pieces,
+        unsigned int piece_count, uint64_t parity_data, unsigned int parity,
+        unsigned int pos)
+{
+    unsigned int i;
+
+    if (pos == BOARD_HEIGHT) {
+        if (BOARD_HEIGHT % 4 == 0) {
+            /* Divisible by 4 */
+            if (parity % 4)
+                return;
+        } else if (BOARD_HEIGHT % 2 == 0) {
+            /* Divisible by 2 */
+            if (parity % 2)
+                return;
+        }
+
+        crossing_list_append(clist, crossing);
+        return;
+    }
+        
+    for (i = 0; i < piece_count; ++i) {
+        if (! check_piece_conflict(pieces[i], board, pos)) {
+            find_all_crossings_kernel(clist,
+                    set_crossing_value(crossing, i, pos),
+                    add_piece_to_board(pieces[i], board, pos),
+                    pieces, piece_count, parity_data,
+                    parity + ((parity_data >> (i * 2) & 0x3)),
+                    pos + 1);
+        }
+    }
+}
+
+void
 find_all_crossings(struct crossing_list *clist, piece_t *pieces,
         unsigned int piece_count)
 {
-    find_all_crossings_kernel(clist, 0, 0, pieces, piece_data_count, 0);
+    uint64_t parity, parity_data;
+    unsigned int i, r, c;
+
+    parity_data = 0;
+    for (i = 0; i < piece_count; ++i) {
+        parity = 0;
+        for (r = 0; r < PIECE_HEIGHT; ++r)
+            for (c = 0; c < PIECE_WIDTH / 2; ++c)
+                parity += (pieces[i] >> (r * PIECE_WIDTH + c)) & 0x1;
+
+        parity_data |= (parity & 0x3) << (i * 2);
+    }
+
+    find_all_crossings_kernel(clist, 0, 0, pieces, piece_data_count,
+            parity_data, 0, 0);
 }
 

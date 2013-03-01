@@ -6,7 +6,7 @@
 
 #define PIECE_WIDTH 6
 #define PIECE_HEIGHT 6
-#define BOARD_HEIGHT 8
+#define BOARD_HEIGHT 6
 
 #define PIECE_VERTICAL_OFFSET 2
 
@@ -50,6 +50,8 @@ unsigned int get_crossing_value(crossing_t crossing, unsigned int pos);
 
 void find_all_crossings(struct crossing_list *crossing_list, piece_t *pieces,
         unsigned int piece_count);
+void build_adjacent_crossings(struct crossing_list *clist, crossing_t crossing,
+        piece_t *pieces, unsigned int piece_count);
 
 void print_piece(FILE *file, piece_t piece);
 
