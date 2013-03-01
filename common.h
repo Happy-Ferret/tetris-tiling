@@ -48,7 +48,7 @@ crossing_t set_crossing_value(crossing_t crossing, unsigned int value,
         unsigned int pos);
 unsigned int get_crossing_value(crossing_t crossing, unsigned int pos);
 
-void compute_crossings(struct crossing_list *crossing_list, piece_t *pieces,
+void find_all_crossings(struct crossing_list *crossing_list, piece_t *pieces,
         unsigned int piece_count);
 
 void print_piece(FILE *file, piece_t piece);

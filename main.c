@@ -18,7 +18,7 @@ main(int argc, char **argv)
     fprintf(stderr, "Computing crossings with %d pieces.\n", piece_data_count);
 
     crossing_list_init(&crossing_list);
-    compute_crossings(&crossing_list, binary_pieces, piece_data_count);
+    find_all_crossings(&crossing_list, binary_pieces, piece_data_count);
 
     fprintf(stderr, "Crossings: %lu\n", crossing_list.count);
 

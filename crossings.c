@@ -104,6 +104,13 @@ set_crossing_value(crossing_t crossing, unsigned int value, unsigned int pos)
     return crossing;
 }
 
+static inline crossing_t
+set_crossing_value_unsafe(crossing_t crossing, unsigned int value,
+        unsigned int pos)
+{
+    return crossing | (crossing_t)value << (BOARD_HEIGHT - pos - 1) * 6;
+}
+
 inline unsigned int
 get_crossing_value(crossing_t crossing, unsigned int pos)
 {
@@ -146,26 +153,20 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
 }
 
 inline void
-crossings_compute_kernel(void (*crossing_handler)(void *, crossing_t),
-        void *handler_data, crossing_t crossing, board_t board,
-        piece_t *pieces, unsigned int piece_count, unsigned int pos)
+find_all_crossings_kernel(struct crossing_list *clist,
+        crossing_t crossing, board_t board, piece_t *pieces,
+        unsigned int piece_count, unsigned int pos)
 {
     unsigned int i;
 
     if (pos == BOARD_HEIGHT) {
-        (*crossing_handler)(handler_data, crossing);
-        return;
-    }
-
-    if (get_crossing_value(crossing, pos) != CROSSING_INVALID) {
-        crossings_compute_kernel(crossing_handler, handler_data, crossing,
-                board, pieces, piece_count, pos + 1);
+        crossing_list_append(clist, crossing);
         return;
     }
         
     for (i = 0; i < piece_count; ++i) {
         if (! check_piece_conflict(pieces[i], board, pos)) {
-            crossings_compute_kernel(crossing_handler, handler_data,
+            find_all_crossings_kernel(clist,
                     set_crossing_value(crossing, i, pos),
                     add_piece_to_board(pieces[i], board, pos),
                     pieces, piece_count, pos + 1);
@@ -174,18 +175,9 @@ crossings_compute_kernel(void (*crossing_handler)(void *, crossing_t),
 }
 
 void
-compute_crossings(struct crossing_list *clist, piece_t *pieces,
+find_all_crossings(struct crossing_list *clist, piece_t *pieces,
         unsigned int piece_count)
 {
-    int i;
-    crossing_t initial_crossing;
-
-    initial_crossing = 0;
-    for (i = 0; i < BOARD_HEIGHT; ++i)
-        initial_crossing = set_crossing_value(initial_crossing,
-                CROSSING_INVALID, i);
-
-    crossings_compute_kernel((void *)&crossing_list_append, clist,
-            initial_crossing, 0, pieces, piece_data_count, 0);
+    find_all_crossings_kernel(clist, 0, 0, pieces, piece_data_count, 0);
 }
 
