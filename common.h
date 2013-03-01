@@ -18,6 +18,7 @@ typedef uint64_t crossing_t;
 
 struct piece_data {
     char board[PIECE_HEIGHT][PIECE_WIDTH];
+    char future[5];
 };
 
 extern const struct piece_data piece_data[];
