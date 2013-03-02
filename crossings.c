@@ -30,7 +30,7 @@ print_crossing(FILE *file, crossing_t crossing)
             for (c = 0; c < PIECE_WIDTH; ++c) {
                 if (r + pos - PIECE_VERTICAL_OFFSET >= 0
                         && r + pos - PIECE_VERTICAL_OFFSET < BOARD_HEIGHT
-                        && piece_data[piece].board[BOARD_HEIGHT - r - 1][c]) {
+                        && piece_data[piece].board[PIECE_HEIGHT - r - 1][c]) {
                     board[r + pos - PIECE_VERTICAL_OFFSET][c] = 'A' + pos;
 
                     if (c < PIECE_WIDTH / 2)
