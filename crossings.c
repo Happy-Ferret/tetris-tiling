@@ -7,10 +7,9 @@
 #include <string.h>
 
 void
-print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
+print_crossing(FILE *file, crossing_t crossing)
 {
-    int r, c, pos, parity;
-    piece_t piece;
+    int r, c, pos, parity, piece;
     char board[BOARD_HEIGHT][PIECE_WIDTH + 1];
 
     for (r = 0; r < BOARD_HEIGHT; ++r) {
@@ -22,15 +21,16 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
 
     parity = 0;
     for (pos = 0; pos < BOARD_HEIGHT; ++pos) {
-        if (get_crossing_value(crossing, pos) == CROSSING_INVALID)
+        piece = get_crossing_value(crossing, pos);
+
+        if (piece == CROSSING_INVALID)
             continue;
 
-        piece = pieces[get_crossing_value(crossing, pos)];
         for (r = 0; r < PIECE_HEIGHT; ++r) {
             for (c = 0; c < PIECE_WIDTH; ++c) {
                 if (r + pos - PIECE_VERTICAL_OFFSET >= 0
                         && r + pos - PIECE_VERTICAL_OFFSET < BOARD_HEIGHT
-                        && piece & (1 << (r * PIECE_WIDTH + c))) {
+                        && piece_data[piece].board[BOARD_HEIGHT - r - 1][c]) {
                     board[r + pos - PIECE_VERTICAL_OFFSET][c] = 'A' + pos;
 
                     if (c < PIECE_WIDTH / 2)
@@ -42,7 +42,12 @@ print_crossing(FILE *file, crossing_t crossing, piece_t *pieces)
 
     fprintf(file, "Parity: %d\n", parity);
     for (r = BOARD_HEIGHT - 1; r >= 0; --r) {
-        fprintf(file, "%s  %02u\n", board[r], get_crossing_value(crossing, r));
+        fprintf(file, "%s", board[r]);
+
+        if (get_crossing_value(crossing, r) != CROSSING_INVALID)
+            fprintf(file, "  %02d\n", get_crossing_value(crossing, r));
+        else
+            fprintf(file, "  --\n");
     }
 }
 
@@ -82,8 +87,7 @@ find_all_crossings_kernel(struct crossing_list *clist,
 }
 
 void
-find_all_crossings(struct crossing_list *clist,
-        const struct piece_data *pieces, unsigned int piece_count)
+find_all_crossings(struct crossing_list *clist)
 {
     uint64_t parity, parity_data;
     piece_t *binary_pieces;
@@ -92,11 +96,11 @@ find_all_crossings(struct crossing_list *clist,
     /* Load the pieces as binary */
     binary_pieces = malloc(piece_data_count * sizeof(*binary_pieces));
     for (i = 0; i < piece_data_count; ++i)
-        binary_pieces[i] = piece_data_get_piece(&pieces[i]);
+        binary_pieces[i] = piece_data_get_piece(&piece_data[i]);
 
     /* Load the parity_data */
     parity_data = 0;
-    for (i = 0; i < piece_count; ++i) {
+    for (i = 0; i < piece_data_count; ++i) {
         parity = 0;
         for (r = 0; r < PIECE_HEIGHT; ++r)
             for (c = 0; c < PIECE_WIDTH / 2; ++c)

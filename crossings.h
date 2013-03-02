@@ -5,9 +5,8 @@
 
 #define CROSSING_INVALID 0x3f
 
-void print_crossing(FILE *file, crossing_t crossing, piece_t *pieces);
-void find_all_crossings(struct crossing_list *crossing_list,
-        const struct piece_data *pieces, unsigned int piece_count);
+void print_crossing(FILE *file, crossing_t crossing);
+void find_all_crossings(struct crossing_list *crossing_list);
 
 /* Note that crossings are storeed in reverse-order.  This way, they come out
  * sorted from the crossing-generation algorithm. */

@@ -48,7 +48,7 @@ crossing_list_append_all(struct crossing_list *list,
 }
 
 static inline ssize_t
-crossing_list_find(struct crossing_list *list, crossing_t crossing)
+crossing_list_find(const struct crossing_list *list, crossing_t crossing)
 {
     crossing_t *start, *end, *middle;
 

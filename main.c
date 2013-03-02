@@ -1,5 +1,6 @@
 #include "common.h"
 #include "crossings.h"
+#include "adjacency.h"
 #include "crossing_list.h"
 
 #include <stdlib.h>
@@ -13,7 +14,8 @@ main(int argc, char **argv)
     fprintf(stderr, "Computing crossings with %d pieces.\n", piece_data_count);
 
     crossing_list_init(&crossing_list);
-    find_all_crossings(&crossing_list, piece_data, piece_data_count);
+    find_all_crossings(&crossing_list);
+    build_adjacency_matrix(&crossing_list, 0);
 
     fprintf(stderr, "Crossings: %lu\n", crossing_list.count);
 
