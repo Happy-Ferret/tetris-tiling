@@ -2,8 +2,6 @@
 #define __TETRIS_CROSSINGS_H__
 
 #include "common.h"
-#include "pieces.h"
-#include "crossing_list.h"
 
 #define CROSSING_INVALID 0x3f
 

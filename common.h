@@ -15,6 +15,9 @@ struct piece_data {
     char future[5];
 };
 
+struct crossing_list;
+struct adjacency_list;
+
 extern const struct piece_data piece_data[];
 extern const unsigned int piece_data_count;
 

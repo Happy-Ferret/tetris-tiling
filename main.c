@@ -1,5 +1,6 @@
 #include "common.h"
 #include "crossings.h"
+#include "crossing_list.h"
 
 #include <stdlib.h>
 #include <stdio.h>

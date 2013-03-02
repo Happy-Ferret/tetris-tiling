@@ -4,6 +4,7 @@ OBJS = \
 	main \
 	pieces \
 	crossings \
+	adjacency \
 	piece_data
 
 all: tetris
