@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 piece_t
-tetris_piece_get_binary(const struct piece_data *piece)
+piece_data_get_piece(const struct piece_data *piece)
 {
     int r, c;
     piece_t p;

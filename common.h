@@ -10,12 +10,6 @@
 
 #define PIECE_VERTICAL_OFFSET 2
 
-typedef uint64_t piece_t;
-typedef uint64_t board_t;
-typedef uint64_t crossing_t;
-
-#define CROSSING_INVALID 0x3f
-
 struct piece_data {
     char board[PIECE_HEIGHT][PIECE_WIDTH];
     char future[5];
@@ -24,37 +18,10 @@ struct piece_data {
 extern const struct piece_data piece_data[];
 extern const unsigned int piece_data_count;
 
-struct crossing_list {
-    crossing_t *crossings;
-    size_t count;
-    size_t alloc;
-};
-
-void crossing_list_init(struct crossing_list *list);
-void crossing_list_append(struct crossing_list *list, crossing_t crossing);
-void crossing_list_append_all(struct crossing_list *list,
-        struct crossing_list *other);
-ssize_t crossing_list_find(struct crossing_list *list, crossing_t crossing);
-void crossing_list_destroy(struct crossing_list *list);
-
-piece_t tetris_piece_get_binary(const struct piece_data *piece);
-void print_board(FILE *file, board_t board);
-void print_piece(FILE *file, piece_t piece);
-void print_crossing(FILE *file, crossing_t crossing, piece_t *pieces);
-
-board_t add_piece_to_board(piece_t piece, board_t board, unsigned int pos);
-board_t check_piece_conflict(piece_t piece, board_t board, unsigned int pos);
-
-crossing_t set_crossing_value(crossing_t crossing, unsigned int value,
-        unsigned int pos);
-unsigned int get_crossing_value(crossing_t crossing, unsigned int pos);
-
-void find_all_crossings(struct crossing_list *crossing_list, piece_t *pieces,
-        unsigned int piece_count);
-void build_adjacent_crossings(struct crossing_list *clist, crossing_t crossing,
-        piece_t *pieces, unsigned int piece_count);
-
-void print_piece(FILE *file, piece_t piece);
+typedef uint64_t piece_t;
+typedef uint64_t board_t;
+typedef uint64_t crossing_t;
+typedef uint32_t index_t;
 
 #endif /* __TETRIS_COMMON_H__ */
 

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "crossings.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -6,24 +7,14 @@
 int
 main(int argc, char **argv)
 {
-    unsigned int i;
-    piece_t *binary_pieces;
     struct crossing_list crossing_list;
-
-    /* Load the pieces as binary */
-    binary_pieces = malloc(piece_data_count * sizeof(*binary_pieces));
-    for (i = 0; i < piece_data_count; ++i)
-        binary_pieces[i] = tetris_piece_get_binary(&piece_data[i]);
 
     fprintf(stderr, "Computing crossings with %d pieces.\n", piece_data_count);
 
     crossing_list_init(&crossing_list);
-    find_all_crossings(&crossing_list, binary_pieces, piece_data_count);
+    find_all_crossings(&crossing_list, piece_data, piece_data_count);
 
     fprintf(stderr, "Crossings: %lu\n", crossing_list.count);
-
-    build_adjacent_crossings(&crossing_list, crossing_list.crossings[458],
-            binary_pieces, piece_data_count);
 
 /*
     for (i = 0; i < crossing_list.count; ++i) {
