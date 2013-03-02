@@ -7,6 +7,5 @@ struct adjacency_list {
 
 struct adjacency_list *
 build_adjacency_matrix(const struct crossing_list *crossings,
-        const struct piece_data *pieces, unsigned int piece_count,
         unsigned int threads);
 

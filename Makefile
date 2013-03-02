@@ -1,4 +1,5 @@
 CFLAGS = -O0 -g -Wall
+#CFLAGS = -O3 -funroll-loops -Wall
 
 OBJS = \
 	main \
