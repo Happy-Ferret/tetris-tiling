@@ -15,9 +15,10 @@ main(int argc, char **argv)
 
     crossing_list_init(&crossing_list);
     find_all_crossings(&crossing_list);
-    build_adjacency_matrix(&crossing_list, 0);
 
     fprintf(stderr, "Crossings: %lu\n", crossing_list.count);
+
+    build_adjacency_matrix(&crossing_list, 1);
 
 /*
     for (i = 0; i < crossing_list.count; ++i) {

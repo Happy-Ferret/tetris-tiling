@@ -4,6 +4,10 @@
 #include "crossing_list.h"
 #include "crossings.h"
 
+#include <pthread.h>
+
+#define THREAD_CHUNK_SIZE 1024
+
 static inline void
 build_adjacent_crossings_kernel(struct crossing_list *adjacent_crossings,
         crossing_t crossing, board_t board, piece_t *pieces, unsigned int pos)
@@ -103,39 +107,100 @@ build_adjacency_list(struct adjacency_list *list,
     list->indices = realloc(list->indices, list->count * sizeof(*list->indices));
 }
 
+struct adjacency_matrix_data
+{
+    pthread_mutex_t lock;
+    struct adjacency_list *matrix;
+    const struct crossing_list *crossings;
+    piece_t *binary_pieces;
+    volatile size_t count;
+    volatile size_t zeros;
+};
+
+void *
+build_adjacency_matrix_thread(void *data_)
+{
+    unsigned int zeros;
+    size_t pos, end;
+    struct adjacency_matrix_data *data;
+    struct crossing_list tmp_list;
+
+    data = data_;
+
+    crossing_list_init(&tmp_list);
+
+    pthread_mutex_lock(&data->lock);
+
+    while(data->count < data->crossings->count) {
+        pos = data->count;
+        end = pos + THREAD_CHUNK_SIZE;
+        if (end > data->crossings->count)
+            end = data->crossings->count;
+        data->count = end;
+
+        pthread_mutex_unlock(&data->lock);
+
+        zeros = 0;
+        for (; pos < end; ++pos) {
+            build_adjacent_crossings(&tmp_list,
+                    data->crossings->crossings[pos], data->binary_pieces);
+            build_adjacency_list(&data->matrix[pos],
+                    data->crossings, &tmp_list);
+
+            if (data->matrix[pos].count == 0)
+                ++zeros;
+        }
+
+        pthread_mutex_lock(&data->lock);
+
+        data->zeros += zeros;
+    }
+
+    pthread_mutex_unlock(&data->lock);
+
+    crossing_list_destroy(&tmp_list);
+
+    return NULL;
+}
+
 struct adjacency_list *
 build_adjacency_matrix(const struct crossing_list *crossings,
         unsigned int threads)
 {
-    unsigned int i, zeros;
-    piece_t *binary_pieces;
-    struct adjacency_list *matrix;
-    struct crossing_list tmp_list;
+    unsigned int i;
+    struct adjacency_matrix_data data;
+    pthread_t *thread_list;
 
-    /* Load the pieces as binary */
-    binary_pieces = malloc(piece_data_count * sizeof(*binary_pieces));
+    /* Initialize adjacency matrix data */
+    pthread_mutex_init(&data.lock, NULL);
+    data.matrix = malloc(crossings->count * sizeof(*data.matrix));
+    data.crossings = crossings;
+
+    data.binary_pieces = malloc(piece_data_count * sizeof(*data.binary_pieces));
     for (i = 0; i < piece_data_count; ++i)
-        binary_pieces[i] = piece_data_get_piece(&piece_data[i]);
+        data.binary_pieces[i] = piece_data_get_piece(&piece_data[i]);
 
-    crossing_list_init(&tmp_list);
-    matrix = malloc(crossings->count * sizeof(*matrix));
+    data.count = 0;
+    data.zeros = 0;
 
-    zeros = 0;
-    for (i = 0; i < crossings->count; ++i) {
-        build_adjacent_crossings(&tmp_list, crossings->crossings[i],
-                binary_pieces);
-        build_adjacency_list(&matrix[i], crossings, &tmp_list);
+    /* Start threads */
+    if (threads <= 1) {
+        build_adjacency_matrix_thread(&data);
+    } else {
+        thread_list = malloc(threads * sizeof(*thread_list));
 
-        if (matrix[i].count == 0) {
-            ++zeros;
-            printf("Crossing %d has no neighbors:\n", i);
-            print_crossing(stdout, crossings->crossings[i]);
+        for (i = 0; i < threads; ++i) {
+            pthread_create(&thread_list[i], NULL,
+                    &build_adjacency_matrix_thread, &data);
+        }
+
+        for (i = 0; i < threads; ++i) {
+            pthread_join(thread_list[i], NULL);
         }
     }
-    fprintf(stderr, "%d crossings have no neighbors\n", zeros);
 
-    crossing_list_destroy(&tmp_list);
+    fprintf(stderr, "%d crossings have no neighbors\n", (int)data.zeros);
 
-    return matrix;
+    return data.matrix;
 }
 

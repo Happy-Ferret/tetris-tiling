@@ -6,7 +6,7 @@
 
 #define PIECE_WIDTH 6
 #define PIECE_HEIGHT 6
-#define BOARD_HEIGHT 6
+#define BOARD_HEIGHT 5
 
 #define PIECE_VERTICAL_OFFSET 2
 
