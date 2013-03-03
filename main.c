@@ -20,15 +20,6 @@ main(int argc, char **argv)
 
     build_adjacency_matrix(&crossing_list, 1);
 
-/*
-    for (i = 0; i < crossing_list.count; ++i) {
-        print_crossing(stdout, crossing_list.crossings[i], binary_pieces);
-        fprintf(stdout, "\n");
-        if (crossing_list_find(&crossing_list, crossing_list.crossings[i]) != i)
-            fprintf(stderr, "Cannot find crossing %d\n", i);
-    }
-*/
-
     return 0;
 }
 
