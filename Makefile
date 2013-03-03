@@ -1,5 +1,7 @@
-CFLAGS = -O0 -g -Wall
-#CFLAGS = -O3 -funroll-loops -Wall
+#CFLAGS = -O0 -g
+CFLAGS = -O3 -funroll-loops
+
+CFLAGS += -Wall
 LFLAGS = -lpthread
 
 OBJS = \

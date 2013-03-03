@@ -6,7 +6,7 @@
 
 #include <pthread.h>
 
-#define THREAD_CHUNK_SIZE 1024
+#define THREAD_CHUNK_SIZE 4096
 
 static inline void
 build_adjacent_crossings_kernel(struct crossing_list *adjacent_crossings,
@@ -114,13 +114,11 @@ struct adjacency_matrix_data
     const struct crossing_list *crossings;
     piece_t *binary_pieces;
     volatile size_t count;
-    volatile size_t zeros;
 };
 
 void *
 build_adjacency_matrix_thread(void *data_)
 {
-    unsigned int zeros;
     size_t pos, end;
     struct adjacency_matrix_data *data;
     struct crossing_list tmp_list;
@@ -140,20 +138,14 @@ build_adjacency_matrix_thread(void *data_)
 
         pthread_mutex_unlock(&data->lock);
 
-        zeros = 0;
         for (; pos < end; ++pos) {
             build_adjacent_crossings(&tmp_list,
                     data->crossings->crossings[pos], data->binary_pieces);
             build_adjacency_list(&data->matrix[pos],
                     data->crossings, &tmp_list);
-
-            if (data->matrix[pos].count == 0)
-                ++zeros;
         }
 
         pthread_mutex_lock(&data->lock);
-
-        data->zeros += zeros;
     }
 
     pthread_mutex_unlock(&data->lock);
@@ -181,7 +173,6 @@ build_adjacency_matrix(const struct crossing_list *crossings,
         data.binary_pieces[i] = piece_data_get_piece(&piece_data[i]);
 
     data.count = 0;
-    data.zeros = 0;
 
     /* Start threads */
     if (threads <= 1) {
@@ -198,8 +189,6 @@ build_adjacency_matrix(const struct crossing_list *crossings,
             pthread_join(thread_list[i], NULL);
         }
     }
-
-    fprintf(stderr, "%d crossings have no neighbors\n", (int)data.zeros);
 
     return data.matrix;
 }
