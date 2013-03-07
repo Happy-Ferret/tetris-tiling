@@ -6,9 +6,10 @@ NUM_THREADS=20
 
 for i in $(seq ${MAX_BOARD_HEIGHT})
 do
-    make clean
+    make -s clean
     export TETRIS_DEFINES="NUM_THREADS=$NUM_THREADS BOARD_WIDTH=$BOARD_WIDTH BOARD_HEIGHT=$i"
-    make -j4
+    make -s -j4
     ./tetris
+    echo
 done
 
