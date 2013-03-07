@@ -4,10 +4,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define BOARD_HEIGHT 8
+#define BOARD_WIDTH 6
+#define NUM_THREADS 1
+
 #define PIECE_WIDTH 6
 #define PIECE_HEIGHT 6
-#define BOARD_HEIGHT 5
-
 #define PIECE_VERTICAL_OFFSET 2
 
 struct piece_data {

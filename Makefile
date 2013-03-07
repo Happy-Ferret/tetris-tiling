@@ -2,13 +2,13 @@
 CFLAGS = -O3 -funroll-loops
 
 CFLAGS += -Wall
-LFLAGS = -lpthread
+LFLAGS = -lpthread -lgmp
 
 OBJS = \
 	main \
 	pieces \
 	crossings \
-	adjacency \
+	matrix_multiply \
 	piece_data
 
 all: tetris

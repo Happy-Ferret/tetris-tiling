@@ -7,6 +7,8 @@
 
 void print_crossing(FILE *file, crossing_t crossing);
 void find_all_crossings(struct crossing_list *crossing_list);
+void build_adjacent_crossings(struct crossing_list *adjacent_crossings,
+        crossing_t crossing, piece_t *binary_pieces);
 
 /* Note that crossings are storeed in reverse-order.  This way, they come out
  * sorted from the crossing-generation algorithm. */
