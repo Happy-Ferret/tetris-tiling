@@ -6,12 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Represents a list of crossings */
 struct crossing_list {
     crossing_t *crossings;
     size_t count;
     size_t alloc;
 };
 
+/* Initialize a crossing list */
 static inline void
 crossing_list_init(struct crossing_list *list)
 {
@@ -20,6 +22,7 @@ crossing_list_init(struct crossing_list *list)
     list->alloc = 1024;
 }
 
+/* Ensure that the list has room for least capacity crossings */
 static inline void
 crossing_list_ensure_capacity(struct crossing_list *list, size_t capacity)
 {
@@ -30,6 +33,7 @@ crossing_list_ensure_capacity(struct crossing_list *list, size_t capacity)
     }
 }
 
+/* Append a single crossing to the list */
 static inline void
 crossing_list_append(struct crossing_list *list, crossing_t crossing)
 {
@@ -38,15 +42,10 @@ crossing_list_append(struct crossing_list *list, crossing_t crossing)
     ++list->count;
 }
 
-static inline void
-crossing_list_append_all(struct crossing_list *list,
-        struct crossing_list *other)
-{
-    crossing_list_ensure_capacity(list, list->count + other->count);
-    memcpy(list->crossings + list->count, other->crossings,
-            other->count * sizeof(*other->crossings));
-}
-
+/* Find a crossing in a sorted crossing list.  If the crossing is found, its
+ * index is returned; otherwise -1 is returned.
+ *
+ * Note: The list *must* be sorted for this algorithm to work. */
 static inline ssize_t
 crossing_list_find(const struct crossing_list *list, crossing_t crossing)
 {
@@ -67,6 +66,7 @@ crossing_list_find(const struct crossing_list *list, crossing_t crossing)
     return -1;
 }
 
+/* Destroy a crossing list */
 static inline void
 crossing_list_destroy(struct crossing_list *list)
 {

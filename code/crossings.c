@@ -129,10 +129,12 @@ build_adjacent_crossings_kernel(struct crossing_list *adjacent_crossings,
         for (i = 0; i < BOARD_HEIGHT; ++i)
             mask |= (board_t)1 << ((i * PIECE_WIDTH) + PIECE_WIDTH / 2 - 1);
 
+        /* Compute a vertical bar piece */
         vert_four = 0;
         for (i = 0; i < 4; ++i)
             vert_four |= (crossing_t)1 << ((i * PIECE_WIDTH) + PIECE_WIDTH / 2 - 1);
 
+        /* The vertical bar piece is a special case. */
         for (i = 0; i < BOARD_HEIGHT; ++i)
             if (! check_piece_conflict(vert_four, board, i))
                 board = add_piece_to_board(vert_four, board, i);
@@ -170,10 +172,10 @@ build_adjacent_crossings(struct crossing_list *adjacent_crossings,
 
     left_edge = 0;
     future = 0;
-    /* Compute a default crossing and a left board edge */
+    /* Compute a default (all invalid) crossing and a left board edge */
     for (i = 0; i < BOARD_HEIGHT; ++i) {
         left_edge |= (board_t)1 << (i * PIECE_WIDTH);
-        future = set_crossing_value_unsafe(future, CROSSING_INVALID, i);
+        future = set_crossing_value(future, CROSSING_INVALID, i);
     }
 
     /* Re-build the board and fill in the future crossing */

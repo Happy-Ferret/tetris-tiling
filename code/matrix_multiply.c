@@ -55,6 +55,7 @@ matrix_multiply_thread(void *data_)
     pthread_mutex_lock(&data->lock);
 
     while(data->count < data->crossings->count) {
+        /* Take a THREAD_CHUNK_SIZE bunch of crossings (i.e. matrix rows) */
         pos = data->count;
         end = pos + THREAD_CHUNK_SIZE;
         if (end > data->crossings->count)
@@ -64,6 +65,7 @@ matrix_multiply_thread(void *data_)
         pthread_mutex_unlock(&data->lock);
 
         for (; pos < end; ++pos) {
+            /* Compute the corresponding multiplications */
             matrix_multiply_row(data->out_vec[pos], data->in_vec,
                     data->crossings->crossings[pos], data->crossings,
                     &tmp_list, data->binary_pieces);
@@ -92,6 +94,7 @@ adjacency_matrix_multiply(const struct crossing_list *crossings,
     data.in_vec = in_vec;
     data.crossings = crossings;
 
+    /* Generate the list of binary pieces */
     data.binary_pieces = malloc(piece_data_count * sizeof(*data.binary_pieces));
     for (i = 0; i < piece_data_count; ++i)
         data.binary_pieces[i] = piece_data_get_piece(&piece_data[i]);

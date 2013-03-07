@@ -25,6 +25,7 @@ main(int argc, char **argv)
 
     fprintf(ilog, "Crossings: %lu\n", crossings.count);
 
+    /* Create and initialize the two vectors */
     in_vec = malloc(crossings.count * sizeof (*in_vec));
     out_vec = malloc(crossings.count * sizeof (*out_vec));
     for (i = 0; i < crossings.count; ++i) {
@@ -50,6 +51,8 @@ main(int argc, char **argv)
         mpz_clear(in_vec[i]);
         mpz_clear(out_vec[i]);
     }
+    free(in_vec);
+    free(out_vec);
 
     crossing_list_destroy(&crossings);
 
