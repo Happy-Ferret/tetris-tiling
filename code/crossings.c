@@ -121,12 +121,21 @@ build_adjacent_crossings_kernel(struct crossing_list *adjacent_crossings,
 {
     unsigned int i;
     board_t mask;
+    crossing_t vert_four;
 
     if (pos == BOARD_HEIGHT) {
         /* Compute the between-crossings mask */
         mask = 0;
         for (i = 0; i < BOARD_HEIGHT; ++i)
             mask |= (board_t)1 << ((i * PIECE_WIDTH) + PIECE_WIDTH / 2 - 1);
+
+        vert_four = 0;
+        for (i = 0; i < 4; ++i)
+            vert_four |= (crossing_t)1 << ((i * PIECE_WIDTH) + PIECE_WIDTH / 2 - 1);
+
+        for (i = 0; i < BOARD_HEIGHT; ++i)
+            if (! check_piece_conflict(vert_four, board, i))
+                board = add_piece_to_board(vert_four, board, i);
 
         if (~board & mask)
             return;
