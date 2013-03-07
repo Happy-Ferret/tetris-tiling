@@ -14,13 +14,16 @@ main(int argc, char **argv)
     struct crossing_list crossings;
     size_t i;
     mpz_t *in_vec, *out_vec, *tmp_vec;
+    FILE *ilog;
 
-    fprintf(stderr, "Computing crossings with %d pieces.\n", piece_data_count);
+    ilog = stdout;
+
+    fprintf(ilog, "Computing crossings with %d pieces.\n", piece_data_count);
 
     crossing_list_init(&crossings);
     find_all_crossings(&crossings);
 
-    fprintf(stderr, "Crossings: %lu\n", crossings.count);
+    fprintf(ilog, "Crossings: %lu\n", crossings.count);
 
     in_vec = malloc(crossings.count * sizeof (*in_vec));
     out_vec = malloc(crossings.count * sizeof (*out_vec));
@@ -33,10 +36,10 @@ main(int argc, char **argv)
     for (i = 0; i < BOARD_WIDTH; ++i) {
         adjacency_matrix_multiply(&crossings, in_vec, out_vec);
 
-        fprintf(stderr, "Tilings for a %dx%d board: ", (int)i + 1,
+        fprintf(ilog, "Tilings for a %dx%d board: ", (int)i + 1,
                 (int)BOARD_HEIGHT);
-        mpz_out_str(stderr, 10, out_vec[0]);
-        fprintf(stderr, "\n");
+        mpz_out_str(ilog, 10, out_vec[0]);
+        fprintf(ilog, "\n");
 
         tmp_vec = in_vec;
         in_vec = out_vec;
