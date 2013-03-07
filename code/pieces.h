@@ -27,7 +27,8 @@ check_piece_conflict(piece_t piece, board_t board, unsigned int pos)
         shifted_board |= (board_t)0x3f
                 << (PIECE_VERTICAL_OFFSET - pos - 1) * PIECE_WIDTH;
 
-    if (pos < PIECE_VERTICAL_OFFSET + BOARD_HEIGHT)
+    if (pos > PIECE_VERTICAL_OFFSET
+            && pos < PIECE_VERTICAL_OFFSET + BOARD_HEIGHT + 1)
         shifted_board |= (board_t)0x3f
                 << (BOARD_HEIGHT + PIECE_VERTICAL_OFFSET - pos) * PIECE_WIDTH;
     
