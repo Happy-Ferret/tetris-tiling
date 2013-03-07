@@ -1,0 +1,321 @@
+Before Parity:
+Working on height 2
+Number of crossings: 39
+length 	 tilings
+1		0
+2		1
+3		0
+4		4
+5		0
+6		9
+7		0
+8		25
+9		0
+10		64
+
+Working on height 3
+Number of crossings: 324
+length 	 tilings
+1		0
+2		0
+3		0
+4		23
+5		0
+6		0
+7		0
+8		997
+9		0
+10		0
+
+Working on height 4
+Number of crossings: 2695
+length 	 tilings
+1		1
+2		4
+3		23
+4		117
+5		454
+6		2003
+7		9157
+8		40899
+9		179399
+10		796558
+
+Working on height 5
+Number of crossings: 22424
+length 	 tilings
+1		0
+2		0
+3		0
+4		454
+5		0
+6		0
+7		0
+8		800290
+9		0
+10		0
+
+Working on height 6
+Number of crossings: 186591
+length 	 tilings
+1		0
+2		9
+3		0
+4		2003
+5		0
+6		178939
+7		0
+8		22483347
+9		0
+10		2569437089
+
+Working on height 7
+Number of crossings: 1552802
+length 	 tilings
+1		0
+2		0
+3		0
+4		9157
+5		0
+6		0
+7		0
+8		657253434
+9		0
+10		0
+
+CPU time: 8123.17 s,  Wall time: 8129.22 s
+
+
+After Parity:
+Working on height 2
+Number of crossings: 19
+length 	 tilings
+1		0
+2		1
+3		0
+4		4
+5		0
+6		9
+7		0
+8		25
+9		0
+10		64
+
+Working on height 4
+Number of crossings: 673
+length 	 tilings
+1		1
+2		4
+3		23
+4		117
+5		454
+6		2003
+7		9157
+8		40899
+9		179399
+10		796558
+
+Working on height 6
+Number of crossings: 93347
+length 	 tilings
+1		0
+2		9
+3		0
+4		2003
+5		0
+6		178939
+7		0
+8		22483347
+9		0
+10		2569437089
+
+Working on height 8
+Number of crossings: 3231953
+length 	 tilings
+1		1
+2		25
+3		997
+4		40899
+5		800290
+6		22483347
+7		657253434
+8		19077209438
+9		517312744806
+10		14571957312254
+
+CPU time: 29448.70 s,  Wall time: 29470.92 s
+
+
+With Parity - Up to length 20
+
+Working on height 2
+Number of crossings: 19
+length 	 tilings
+1		0
+2		1
+3		0
+4		4
+5		0
+6		9
+7		0
+8		25
+9		0
+10		64
+11		0
+12		169
+13		0
+14		441
+15		0
+16		1156
+17		0
+18		3025
+19		0
+20		7921
+
+Working on height 3
+Number of crossings: 324
+length 	 tilings
+1		0
+2		0
+3		0
+4		23
+5		0
+6		0
+7		0
+8		997
+9		0
+10		0
+11		0
+12		44855
+13		0
+14		0
+15		0
+16		2023309
+17		0
+18		0
+19		0
+20		91286913
+
+Working on height 4
+Number of crossings: 673
+length 	 tilings
+1		1
+2		4
+3		23
+4		117
+5		454
+6		2003
+7		9157
+8		40899
+9		179399
+10		796558
+11		3546996
+12		15747348
+13		69834517
+14		310058192
+15		1376868145
+16		6112247118
+17		27132236455
+18		120453362938
+19		534754586459
+20		2373975139658
+
+Working on height 5
+Number of crossings: 22424
+length 	 tilings
+1		0
+2		0
+3		0
+4		454
+5		0
+6		0
+7		0
+8		800290
+9		0
+10		0
+11		0
+12		1601437357
+13		0
+14		0
+15		0
+16		3241461223149
+17		0
+18		0
+19		0
+20		6567785027546670
+
+Working on height 6
+Number of crossings: 93347
+length 	 tilings
+1		0
+2		9
+3		0
+4		2003
+5		0
+6		178939
+7		0
+8		22483347
+9		0
+10		2569437089
+11		0
+12		304446920314
+13		0
+14		35704534261665
+15		0
+16		4203065267122878
+17		0
+18		494232382069456694
+19		0
+20		58138539945306221167
+
+Working on height 7
+Number of crossings: 1552802
+length 	 tilings
+1		0
+2		0
+3		0
+4		9157
+5		0
+6		0
+7		0
+8		657253434
+9		0
+10		0
+11		0
+12		58480141962875
+13		0
+14		0
+15		0
+16		5316709999497259059
+17		0
+18		0
+19		0
+20		484393789403397886429249
+CPU time: 7955.72 s,  Wall time: 7961.58 s
+
+Working on height 8
+Number of crossings: 3231953
+length 	 tilings
+1		1
+2		25
+3		997
+4		40899
+5		800290
+6		22483347
+7		657253434
+8		19077209438
+9		517312744806
+10		14571957312254
+11		412240433359025
+12		11632857444709188
+13		326275845576101452
+14		9187549952207915190
+15		258821654387452112268
+16		7288072624408347082481
+17		205113474464891986564786
+18		5775045306250163285744264
+19		162604515634027972949999862
+20		4578081985029201186301230265
+
+CPU time: 45829.80 s,  Wall time: 72549.95 s
+
