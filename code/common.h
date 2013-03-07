@@ -4,9 +4,17 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define BOARD_HEIGHT 8
-#define BOARD_WIDTH 6
-#define NUM_THREADS 1
+#ifndef BOARD_HEIGHT
+#define BOARD_HEIGHT 4
+#endif
+
+#ifndef BOARD_WIDTH
+#define BOARD_WIDTH 10
+#endif
+
+#ifndef NUM_THREADS
+#define NUM_THREADS 4
+#endif
 
 #define PIECE_WIDTH 6
 #define PIECE_HEIGHT 6

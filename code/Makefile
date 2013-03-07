@@ -4,6 +4,8 @@ CFLAGS = -O3 -funroll-loops
 CFLAGS += -Wall
 LFLAGS = -lpthread -lgmp
 
+CFLAGS += $(foreach def, $(TETRIS_DEFINES), -D$(def))
+
 OBJS = \
 	main \
 	pieces \
