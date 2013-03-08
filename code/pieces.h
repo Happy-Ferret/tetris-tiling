@@ -21,7 +21,7 @@ add_piece_to_board(piece_t piece, board_t board, unsigned int pos)
 /* Returns non-zero when placing the piece on the board at the given position
  * results in a conflict. */
 static inline board_t
-check_piece_conflict(piece_t piece, board_t board, unsigned int pos)
+check_piece_conflict(piece_t piece, board_t board, int pos)
 {
     board_t shifted_board;
     if (pos < PIECE_VERTICAL_OFFSET)
@@ -33,8 +33,8 @@ check_piece_conflict(piece_t piece, board_t board, unsigned int pos)
         shifted_board |= (board_t)0x3f
                 << (PIECE_VERTICAL_OFFSET - pos - 1) * PIECE_WIDTH;
 
-    if (pos > PIECE_VERTICAL_OFFSET
-            && pos < PIECE_VERTICAL_OFFSET + BOARD_HEIGHT + 1)
+    if (PIECE_VERTICAL_OFFSET + BOARD_HEIGHT - pos < 10
+            && PIECE_VERTICAL_OFFSET + BOARD_HEIGHT - pos >= 0)
         shifted_board |= (board_t)0x3f
                 << (BOARD_HEIGHT + PIECE_VERTICAL_OFFSET - pos) * PIECE_WIDTH;
     
